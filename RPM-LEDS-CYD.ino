@@ -60,11 +60,6 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
   delay(250);
-  for (int i = 0; i < 5; i++) {
-    leds[i] = (i < NUM_LEDS) ? CRGB::Green : CRGB::Black;
-  }
-  FastLED.show();
-  delay(250);
   gfx->begin();
   gfx->invertDisplay(true);
   gfx->fillScreen(COLOR_BLACK);
@@ -73,6 +68,11 @@ void setup() {
   gfx->setCursor(20, 55);
   gfx->setTextColor(COLOR_WHITE);
   gfx->print("Starting F1-Dash");
+  delay(250);
+  for (int i = 0; i < 5; i++) {
+    leds[i] = (i < NUM_LEDS) ? CRGB::Green : CRGB::Black;
+  }
+  FastLED.show();
   delay(250);
   gfx->setTextSize(2);
   gfx->setCursor(30, 85);
