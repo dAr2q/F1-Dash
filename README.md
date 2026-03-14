@@ -25,6 +25,8 @@
 
 # **Legal Notice**
 
+- This Project was created using Help from Gemini and modified by me
+
 F1® 24 Game - an official product of the FIA Formula One World Championship™.
 
 The F1 Formula 1 logo, F1 logo, Formula 1, F1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND
