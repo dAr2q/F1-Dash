@@ -74,6 +74,10 @@ void setup() {
   gfx->setTextColor(COLOR_WHITE);
   gfx->print("Starting F1-Dash");
   delay(250);
+  gfx->setTextSize(2);
+  gfx->setCursor(30, 85);
+  gfx->setTextColor(COLOR_GREEN);
+  gfx->print("Testversion");
 
   kniSpi.begin(25, 39, 32, 33);
   touch.begin(kniSpi);
@@ -85,9 +89,12 @@ void setup() {
   wm.setTitle("Config Mode");
   wm.setDarkMode(true);
 
-  gfx->fillScreen(COLOR_BLACK);
   parser = new F1_24_Parser();
   if (WiFi.status() == WL_CONNECTED) {
+    gfx->setTextSize(1);
+  gfx->setCursor(20, 210);
+  gfx->setTextColor(COLOR_GREEN);
+  gfx->print("verbunden");
     for (int i = 5; i < 10; i++) {
       leds[i] = (i < NUM_LEDS) ? CRGB::Red : CRGB::Black;
     }
@@ -101,6 +108,7 @@ void setup() {
   FastLED.show();
   delay(250);
   FastLED.clear();
+  gfx->fillScreen(COLOR_BLACK);
   delay(250);
 }
 
@@ -123,6 +131,12 @@ void loop() {
   }
 
   if (digitalRead(WIFI_SET_PIN) == LOW) {
+    gfx->fillScreen(COLOR_BLACK);
+    gfx->setTextSize(3);
+    gfx->setCursor(20, 55);
+    gfx->setTextColor(COLOR_WHITE);
+    gfx->print("F1-Dash Config");
+
     WiFiManager wm;
     wm.setHostname("F1-Dash");
     wm.setTitle("Config Mode");
@@ -144,7 +158,7 @@ void loop() {
     float delta = (float)parser->packetLapData()->m_lapData(pIdx).m_deltaToCarInFrontInMSPart / 1000.0f;
     uint8_t pos = parser->packetLapData()->m_lapData(pIdx).m_carPosition;
 
-    drawF12020Dash(speed, gear, fuel, delta, pos, ers);
+    drawF1Dash(speed, gear, fuel, delta, pos, ers);
   } else {
     // --- TYRE DASH ---
     uint8_t t[4], w[4];
@@ -157,14 +171,14 @@ void loop() {
   FastLED.show();
 }
 
-void drawF12020Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, float ers) {
+void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, float ers) {
   // 2. GANG (Zentral)
   if (g != lGear) {
     gfx->setTextSize(10);
-    gfx->setCursor(135, 55);
+    gfx->setCursor(135, 25);
     gfx->setTextColor(COLOR_BLACK);
     gfx->print(lGear == 0 ? "N" : (lGear == -1 ? "R" : String(lGear)));
-    gfx->setCursor(135, 55);
+    gfx->setCursor(135, 25);
     gfx->setTextColor(COLOR_WHITE);
     gfx->print(g == 0 ? "N" : (g == -1 ? "R" : String(g)));
     lGear = g;
@@ -173,12 +187,12 @@ void drawF12020Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, 
   // 3. SPEED
   if (s != lSpeed) {
     gfx->setTextSize(3);
-    gfx->setCursor(130, 140);
+    gfx->setCursor(135, 140);
     gfx->setTextColor(COLOR_BLACK);
-    gfx->print(String(lSpeed) + " KMH");
-    gfx->setCursor(130, 140);
+    gfx->print(String(lSpeed));
+    gfx->setCursor(135, 140);
     gfx->setTextColor(COLOR_WHITE);
-    gfx->print(String(s) + " KMH");
+    gfx->print(String(s));
     lSpeed = s;
   }
 
@@ -219,11 +233,11 @@ void drawF12020Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, 
 void drawTyreDash(uint8_t t[], uint8_t w[]) {
   // Reifen Positionen
   int x[4] = { 45, 195, 45, 195 };
-  int y[4] = { 45, 45, 135, 135 };
+  int y[4] = { 135, 135, 45, 45 };
 
   for (int i = 0; i < 4; i++) {
     if (t[i] != lT[i] || w[i] != lWear[i]) {
-      uint16_t c = (t[i] > 100) ? COLOR_RED : (t[i] < 78 ? COLOR_BLUE : COLOR_GREEN);
+      uint16_t c = (t[i] > 100) ? COLOR_RED : (t[i] < 60 ? COLOR_BLUE : COLOR_GREEN);
       gfx->fillRoundRect(x[i], y[i], 85, 80, 8, c);
 
       gfx->setTextColor(COLOR_BLACK);
