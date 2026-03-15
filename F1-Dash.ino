@@ -92,9 +92,9 @@ void setup() {
   parser = new F1_24_Parser();
   if (WiFi.status() == WL_CONNECTED) {
     gfx->setTextSize(1);
-  gfx->setCursor(20, 210);
-  gfx->setTextColor(COLOR_GREEN);
-  gfx->print("verbunden");
+    gfx->setCursor(20, 210);
+    gfx->setTextColor(COLOR_GREEN);
+    gfx->print("verbunden");
     for (int i = 5; i < 10; i++) {
       leds[i] = (i < NUM_LEDS) ? CRGB::Red : CRGB::Black;
     }
@@ -117,7 +117,6 @@ void loop() {
   if (touch.touched() && (millis() - lastTouch > 500)) {
     currentScreen = (currentScreen + 1) % 2;
     gfx->fillScreen(COLOR_BLACK);
-    // Reset Speicher für komplettes Neuzeichnen
     lSpeed = 999;
     lGear = 99;
     lBarW = 0;
@@ -172,7 +171,7 @@ void loop() {
 }
 
 void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, float ers) {
-  // 2. GANG (Zentral)
+  // Gear
   if (g != lGear) {
     gfx->setTextSize(10);
     gfx->setCursor(135, 25);
@@ -184,7 +183,7 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
     lGear = g;
   }
 
-  // 3. SPEED
+  // SPEED
   if (s != lSpeed) {
     gfx->setTextSize(3);
     gfx->setCursor(135, 140);
@@ -196,7 +195,7 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
     lSpeed = s;
   }
 
-  // 4. ERS BALKEN (Unten im 2020er Style)
+  // ERS
   int ersW = map((long)ers, 0, 4000000, 0, 300);
   if (abs(ers - lErs) > 10000) {
     gfx->drawRect(10, 185, 300, 12, COLOR_WHITE);
@@ -205,7 +204,7 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
     lErs = ers;
   }
 
-  // 5. DELTA (Rechts unten)
+  // DELTA
   if (abs(delta - lDelta) > 0.05) {
     gfx->setTextSize(2);
     gfx->setCursor(245, 210);
@@ -217,7 +216,7 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
     lDelta = delta;
   }
 
-  // 6. FUEL (Links unten)
+  // FUEL
   if (abs(fuel - lFuel) > 0.1) {
     gfx->setTextSize(2);
     gfx->setCursor(15, 210);
@@ -231,13 +230,12 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
 }
 
 void drawTyreDash(uint8_t t[], uint8_t w[]) {
-  // Reifen Positionen
   int x[4] = { 45, 195, 45, 195 };
   int y[4] = { 135, 135, 45, 45 };
 
   for (int i = 0; i < 4; i++) {
     if (t[i] != lT[i] || w[i] != lWear[i]) {
-      uint16_t c = (t[i] > 100) ? COLOR_RED : (t[i] < 60 ? COLOR_BLUE : COLOR_GREEN);
+      uint16_t c = (t[i] > 100) ? COLOR_RED : (t[i] < 50 ? COLOR_BLUE : COLOR_GREEN);
       gfx->fillRoundRect(x[i], y[i], 85, 80, 8, c);
 
       gfx->setTextColor(COLOR_BLACK);
