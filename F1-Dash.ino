@@ -4,7 +4,6 @@
 #include <Arduino_GFX_Library.h>
 #include <XPT2046_Touchscreen.h>
 #include <src/F1_24_UDP.h>  //Library MacManley/F1_24_UDP
-
 #include <FastLED.h>
 
 #define NUM_LEDS 15
@@ -12,7 +11,7 @@
 #define DATA_PIN 22
 CRGB leds[NUM_LEDS];
 
-// --- Farbcodes (Vollständig) ---
+// --- Farbcodes ---
 #define COLOR_BLACK 0x0000
 #define COLOR_WHITE 0xFFFF
 #define COLOR_RED 0xF800
@@ -31,7 +30,6 @@ Arduino_GFX* gfx = new Arduino_ILI9341(bus, -1, 1);
 #define WIFI_SET_PIN 0
 const char* RPM_CFG = "F1-Dash-Config";
 
-
 #define XPT2046_CS 33
 #define XPT2046_IRQ 36
 SPIClass kniSpi = SPIClass(VSPI);
@@ -41,7 +39,7 @@ F1_24_Parser* parser;
 int currentScreen = 0;
 unsigned long lastTouch = 0;
 
-// Speicher für Performance
+// Speicher für Performance & Redraw-Logik
 uint16_t lSpeed = 999;
 int8_t lGear = 99;
 int lBarW = 0;
@@ -51,7 +49,7 @@ float lErs = -1.0;
 uint8_t lPos = 0;
 uint8_t lT[4] = { 0, 0, 0, 0 };
 uint8_t lWear[4] = { 0, 0, 0, 0 };
-uint8_t lVisualTyreID = 99;
+uint8_t lVisualTyreID = 99; // Wichtig für Erkennung Mischungswechsel & Screen-Reset
 
 void setup() {
   pinMode(TFT_BL, OUTPUT);
@@ -61,6 +59,7 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
   delay(250);
+  
   gfx->begin();
   gfx->invertDisplay(true);
   gfx->fillScreen(COLOR_BLACK);
@@ -118,11 +117,14 @@ void loop() {
   if (touch.touched() && (millis() - lastTouch > 500)) {
     currentScreen = (currentScreen + 1) % 2;
     gfx->fillScreen(COLOR_BLACK);
+    
+    // Alle Speicherwerte resetten, um Redraw zu erzwingen
     lSpeed = 999;
     lGear = 99;
     lBarW = 0;
     lErs = -1.0;
     lDelta = 99.0;
+    lVisualTyreID = 99; 
     for (int i = 0; i < 4; i++) {
       lT[i] = 0;
       lWear[i] = 0;
@@ -162,11 +164,11 @@ void loop() {
   } else {
     // --- TYRE DASH ---
     uint8_t t[4], w[4];
+    uint8_t visualTyreID = parser->packetCarStatusData()->m_carStatusData(pIdx).m_visualTyreCompound;
     for (int i = 0; i < 4; i++) {
       t[i] = parser->packetCarTelemetryData()->m_carTelemetryData(pIdx).m_tyresSurfaceTemperature[i];
       w[i] = (uint8_t)parser->packetCarDamageData()->m_carDamageData(pIdx).m_tyresWear[i];
     }
-    uint8_t visualTyreID = parser->packetCarStatusData()->m_carStatusData(pIdx).m_visualTyreCompound;
     drawTyreDash(t, w, visualTyreID);
   }
   FastLED.show();
@@ -235,6 +237,32 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
   int x[4] = { 45, 195, 45, 195 };
   int y[4] = { 135, 135, 45, 45 };
 
+  // --- REIFENTYP ANZEIGE (Zentriert auf 320px) ---
+  if (tyreID != lVisualTyreID) {
+    gfx->fillRect(80, 5, 160, 30, COLOR_BLACK); 
+    
+    String tyreName = "";
+    uint16_t tyreColor = COLOR_WHITE;
+
+    switch (tyreID) {
+      case 16: tyreName = "SOFT"; tyreColor = COLOR_RED; break;
+      case 17: tyreName = "MEDIUM"; tyreColor = COLOR_YELLOW; break;
+      case 18: tyreName = "HARD"; tyreColor = COLOR_WHITE; break;
+      case 7:  tyreName = "INTER"; tyreColor = COLOR_GREEN; break;
+      case 8:  tyreName = "WET"; tyreColor = COLOR_BLUE; break;
+      default: tyreName = "TYRE"; break;
+    }
+
+    gfx->setTextSize(2);
+    gfx->setTextColor(tyreColor);
+    // Zentrierung für 320px Breite
+    int16_t x1, y1;
+    uint16_t w_text, h_text;
+    gfx->getTextBounds(tyreName, 0, 0, &x1, &y1, &w_text, &h_text);
+    gfx->setCursor(160 - (w_text / 2), 10); 
+    gfx->print(tyreName);
+  }
+
   for (int i = 0; i < 4; i++) {
     if (t[i] != lT[i] || w[i] != lWear[i] || tyreID != lVisualTyreID) {
 
@@ -243,40 +271,17 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
 
       // Logik basierend auf VisualTyreID (F1 24 Standard)
       switch (tyreID) {
-        case 16:  // Soft (C5/C4 - Rot)
-          tempMin = 85;
-          tempMax = 110;
-          break;
-        case 17:  // Medium (C3 - Gelb)
-          tempMin = 90;
-          tempMax = 115;
-          break;
-        case 18:  // Hard (C2/C1 - Weiß)
-          tempMin = 95;
-          tempMax = 120;
-          break;
-        case 7:  // Intermediate (Grün)
-          tempMin = 40;
-          tempMax = 80;
-          break;
-        case 8:  // Wet (Blau)
-          tempMin = 30;
-          tempMax = 70;
-          break;
-        default:  // Fallback für alle anderen (z.B. MyTeam/F2)
-          tempMin = 80;
-          tempMax = 105;
-          break;
+        case 16: tempMin = 70; tempMax = 100; break; // Soft
+        case 17: tempMin = 75; tempMax = 105; break; // Medium
+        case 18: tempMin = 80; tempMax = 110; break; // Hard
+        case 7:  tempMin = 35; tempMax = 75;  break; // Inter
+        case 8:  tempMin = 25; tempMax = 65;  break; // Wet
+        default: tempMin = 70; tempMax = 100; break; 
       }
 
-      // Farbwahl basierend auf dem Fenster
-      if (t[i] > tempMax) {
-        color = COLOR_RED;  // Überhitzt
-      } else if (t[i] < tempMin) {
-        color = COLOR_BLUE;  // Zu kalt
-      } else {
-        color = COLOR_GREEN;  // Optimales Fenster
-      }
+      if (t[i] > tempMax) color = COLOR_RED;
+      else if (t[i] < tempMin) color = COLOR_BLUE;
+      else color = COLOR_GREEN;
 
       // Zeichnen
       gfx->fillRoundRect(x[i], y[i], 85, 80, 8, color);
