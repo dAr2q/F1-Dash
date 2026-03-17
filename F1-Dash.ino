@@ -51,6 +51,7 @@ float lErs = -1.0;
 uint8_t lPos = 0;
 uint8_t lT[4] = { 0, 0, 0, 0 };
 uint8_t lWear[4] = { 0, 0, 0, 0 };
+uint8_t lVisualTyreID = 99;
 
 void setup() {
   pinMode(TFT_BL, OUTPUT);
@@ -77,7 +78,7 @@ void setup() {
   gfx->setTextSize(2);
   gfx->setCursor(30, 85);
   gfx->setTextColor(COLOR_GREEN);
-  gfx->print("Testversion");
+  gfx->print("v4");
 
   kniSpi.begin(25, 39, 32, 33);
   touch.begin(kniSpi);
@@ -165,7 +166,8 @@ void loop() {
       t[i] = parser->packetCarTelemetryData()->m_carTelemetryData(pIdx).m_tyresSurfaceTemperature[i];
       w[i] = (uint8_t)parser->packetCarDamageData()->m_carDamageData(pIdx).m_tyresWear[i];
     }
-    drawTyreDash(t, w);
+    uint8_t visualTyreID = parser->packetCarStatusData()->m_carStatusData(pIdx).m_visualTyreCompound;
+    drawTyreDash(t, w, visualTyreID);
   }
   FastLED.show();
 }
@@ -198,9 +200,9 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
   // ERS
   int ersW = map((long)ers, 0, 4000000, 0, 300);
   if (abs(ers - lErs) > 10000) {
-    gfx->drawRect(10, 185, 300, 12, COLOR_WHITE);
-    gfx->fillRect(11, 186, ersW, 10, COLOR_YELLOW);
-    gfx->fillRect(11 + ersW, 186, 298 - ersW, 10, COLOR_BLACK);
+    gfx->drawRect(10, 165, 300, 12, COLOR_WHITE);
+    gfx->fillRect(11, 166, ersW, 10, COLOR_YELLOW);
+    gfx->fillRect(11 + ersW, 166, 298 - ersW, 10, COLOR_BLACK);
     lErs = ers;
   }
 
@@ -229,27 +231,70 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
   }
 }
 
-void drawTyreDash(uint8_t t[], uint8_t w[]) {
+void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
   int x[4] = { 45, 195, 45, 195 };
   int y[4] = { 135, 135, 45, 45 };
 
   for (int i = 0; i < 4; i++) {
-    if (t[i] != lT[i] || w[i] != lWear[i]) {
-      uint16_t c = (t[i] > 100) ? COLOR_RED : (t[i] < 50 ? COLOR_BLUE : COLOR_GREEN);
-      gfx->fillRoundRect(x[i], y[i], 85, 80, 8, c);
+    if (t[i] != lT[i] || w[i] != lWear[i] || tyreID != lVisualTyreID) {
+
+      uint16_t color;
+      int tempMin, tempMax;
+
+      // Logik basierend auf VisualTyreID (F1 24 Standard)
+      switch (tyreID) {
+        case 16:  // Soft (C5/C4 - Rot)
+          tempMin = 85;
+          tempMax = 110;
+          break;
+        case 17:  // Medium (C3 - Gelb)
+          tempMin = 90;
+          tempMax = 115;
+          break;
+        case 18:  // Hard (C2/C1 - Weiß)
+          tempMin = 95;
+          tempMax = 120;
+          break;
+        case 7:  // Intermediate (Grün)
+          tempMin = 40;
+          tempMax = 80;
+          break;
+        case 8:  // Wet (Blau)
+          tempMin = 30;
+          tempMax = 70;
+          break;
+        default:  // Fallback für alle anderen (z.B. MyTeam/F2)
+          tempMin = 80;
+          tempMax = 105;
+          break;
+      }
+
+      // Farbwahl basierend auf dem Fenster
+      if (t[i] > tempMax) {
+        color = COLOR_RED;  // Überhitzt
+      } else if (t[i] < tempMin) {
+        color = COLOR_BLUE;  // Zu kalt
+      } else {
+        color = COLOR_GREEN;  // Optimales Fenster
+      }
+
+      // Zeichnen
+      gfx->fillRoundRect(x[i], y[i], 85, 80, 8, color);
 
       gfx->setTextColor(COLOR_BLACK);
       gfx->setTextSize(3);
       gfx->setCursor(x[i] + 20, y[i] + 15);
-      gfx->print(String(t[i]));  // Temperatur
+      gfx->print(String(t[i]));
 
       gfx->setTextSize(2);
       gfx->setCursor(x[i] + 18, y[i] + 50);
-      gfx->print(String(w[i]) + "%");  // Verschleiß
+      gfx->print(String(w[i]) + "%");
+
       lT[i] = t[i];
       lWear[i] = w[i];
     }
   }
+  lVisualTyreID = tyreID;
 }
 
 void updateRevLights(uint16_t bits) {
