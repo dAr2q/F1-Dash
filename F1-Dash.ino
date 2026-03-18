@@ -138,6 +138,9 @@ void loop() {
     gfx->setCursor(20, 55);
     gfx->setTextColor(COLOR_WHITE);
     gfx->print("F1-Dash Config");
+    gfx->setCursor(20, 95);
+    gfx->setTextColor(COLOR_YELLOW);
+    gfx->print(WiFi.localIP());
 
     WiFiManager wm;
     wm.setHostname("F1-Dash");
@@ -200,11 +203,11 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
   }
 
   // ERS
-  int ersW = map((long)ers, 0, 4000000, 0, 300);
+  int ersW = map((long)ers, 0, 4000000, 0, 299);
   if (abs(ers - lErs) > 10000) {
-    gfx->drawRect(10, 165, 300, 12, COLOR_WHITE);
-    gfx->fillRect(11, 166, ersW, 10, COLOR_YELLOW);
-    gfx->fillRect(11 + ersW, 166, 298 - ersW, 10, COLOR_BLACK);
+    gfx->drawRect(10, 165, 300, 27, COLOR_WHITE);
+    gfx->fillRect(11, 166, ersW, 25, COLOR_YELLOW);
+    gfx->fillRect(11 + ersW, 166, 298 - ersW, 25, COLOR_BLACK);
     lErs = ers;
   }
 
@@ -271,12 +274,12 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
 
       // Logik basierend auf VisualTyreID (F1 24 Standard)
       switch (tyreID) {
-        case 16: tempMin = 70; tempMax = 100; break; // Soft
-        case 17: tempMin = 75; tempMax = 105; break; // Medium
-        case 18: tempMin = 80; tempMax = 110; break; // Hard
-        case 7:  tempMin = 35; tempMax = 75;  break; // Inter
-        case 8:  tempMin = 25; tempMax = 65;  break; // Wet
-        default: tempMin = 70; tempMax = 100; break; 
+        case 16: tempMin = 65; tempMax = 100; break; // Soft
+        case 17: tempMin = 70; tempMax = 105; break; // Medium
+        case 18: tempMin = 75; tempMax = 110; break; // Hard
+        case 7:  tempMin = 30; tempMax = 75;  break; // Inter
+        case 8:  tempMin = 20; tempMax = 65;  break; // Wet
+        default: tempMin = 65; tempMax = 100; break; 
       }
 
       if (t[i] > tempMax) color = COLOR_RED;
