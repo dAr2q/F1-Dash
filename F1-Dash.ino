@@ -95,10 +95,10 @@ void setup() {
     FastLED.show();
     delay(250);
     parser->begin();
-    break;
     for (int i = 10; i < 15; i++) {
       leds[i] = (i < NUM_LEDS) ? CRGB::Purple : CRGB::Black;
     }     
+    break;       
     case WL_CONNECT_FAILED:
     gfx->setTextSize(1);
     gfx->setCursor(20, 210);
