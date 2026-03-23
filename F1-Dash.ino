@@ -52,6 +52,7 @@ uint8_t lWear[4] = { 0, 0, 0, 0 };
 uint8_t lVisualTyreID = 99; // Wichtig für Erkennung Mischungswechsel & Screen-Reset
 
 void setup() {
+  Serial.begin(115200);
   pinMode(TFT_BL, OUTPUT);
   digitalWrite(TFT_BL, HIGH);
   pinMode(WIFI_SET_PIN, INPUT_PULLUP);
@@ -63,21 +64,12 @@ void setup() {
   gfx->begin();
   gfx->invertDisplay(true);
   gfx->fillScreen(COLOR_BLACK);
-
-  gfx->setTextSize(3);
-  gfx->setCursor(20, 55);
-  gfx->setTextColor(COLOR_WHITE);
-  gfx->print("Starting F1-Dash");
   delay(250);
   for (int i = 0; i < 5; i++) {
     leds[i] = (i < NUM_LEDS) ? CRGB::Green : CRGB::Black;
   }
   FastLED.show();
-  delay(250);
-  gfx->setTextSize(2);
-  gfx->setCursor(30, 85);
-  gfx->setTextColor(COLOR_GREEN);
-  gfx->print("v4");
+  config_mode();
 
   kniSpi.begin(25, 39, 32, 33);
   touch.begin(kniSpi);
@@ -88,28 +80,58 @@ void setup() {
   wm.setHostname("F1-Dash");
   wm.setTitle("Config Mode");
   wm.setDarkMode(true);
+  wm.setConnectTimeout(60);
 
-  parser = new F1_24_Parser();
-  if (WiFi.status() == WL_CONNECTED) {
+  switch (WiFi.status()) {
+    case WL_CONNECTED:
+    parser = new F1_24_Parser();
     gfx->setTextSize(1);
     gfx->setCursor(20, 210);
     gfx->setTextColor(COLOR_GREEN);
-    gfx->print("verbunden");
+    gfx->print("connected");
     for (int i = 5; i < 10; i++) {
       leds[i] = (i < NUM_LEDS) ? CRGB::Red : CRGB::Black;
     }
     FastLED.show();
     delay(250);
     parser->begin();
+    break;
     for (int i = 10; i < 15; i++) {
       leds[i] = (i < NUM_LEDS) ? CRGB::Purple : CRGB::Black;
-    }
-  }
+    }     
+    case WL_CONNECT_FAILED:
+    gfx->setTextSize(1);
+    gfx->setCursor(20, 210);
+    gfx->setTextColor(COLOR_RED);
+    gfx->print("connect fail");
+    break;
+    default:
+    gfx->setTextSize(1);
+    gfx->setCursor(20, 210);
+    gfx->setTextColor(COLOR_YELLOW);
+    gfx->print(WiFi.status());
+    break;
+}
   FastLED.show();
   delay(250);
   FastLED.clear();
   gfx->fillScreen(COLOR_BLACK);
   delay(250);
+}
+void config_mode() {
+  gfx->fillScreen(COLOR_BLACK);
+  gfx->setTextSize(3);
+  gfx->setCursor(20, 55);
+  gfx->setTextColor(COLOR_WHITE);
+  gfx->print("F1-Dash");
+  delay(250);
+  gfx->setTextSize(2);
+  gfx->setCursor(30, 90);
+  gfx->setTextColor(COLOR_WHITE);
+  gfx->print("Connect To AP:");
+  gfx->setCursor(30, 115);
+  gfx->setTextColor(COLOR_GREEN);
+  gfx->print(RPM_CFG);
 }
 
 void loop() {
@@ -147,6 +169,8 @@ void loop() {
     wm.setTitle("Config Mode");
     wm.setDarkMode(true);
     wm.startConfigPortal(RPM_CFG);
+    currentScreen = (currentScreen + 1) % 2;
+    gfx->fillScreen(COLOR_BLACK);
   }
 
   parser->read();
@@ -169,7 +193,7 @@ void loop() {
     uint8_t t[4], w[4];
     uint8_t visualTyreID = parser->packetCarStatusData()->m_carStatusData(pIdx).m_visualTyreCompound;
     for (int i = 0; i < 4; i++) {
-      t[i] = parser->packetCarTelemetryData()->m_carTelemetryData(pIdx).m_tyresSurfaceTemperature[i];
+      t[i] = parser->packetCarTelemetryData()->m_carTelemetryData(pIdx).m_tyresInnerTemperature[i];
       w[i] = (uint8_t)parser->packetCarDamageData()->m_carDamageData(pIdx).m_tyresWear[i];
     }
     drawTyreDash(t, w, visualTyreID);
@@ -248,11 +272,26 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
     uint16_t tyreColor = COLOR_WHITE;
 
     switch (tyreID) {
-      case 16: tyreName = "SOFT"; tyreColor = COLOR_RED; break;
-      case 17: tyreName = "MEDIUM"; tyreColor = COLOR_YELLOW; break;
-      case 18: tyreName = "HARD"; tyreColor = COLOR_WHITE; break;
-      case 7:  tyreName = "INTER"; tyreColor = COLOR_GREEN; break;
-      case 8:  tyreName = "WET"; tyreColor = COLOR_BLUE; break;
+      case 16:
+        tyreName = "SOFT";
+        tyreColor = COLOR_RED;
+        break;
+      case 17:
+        tyreName = "MEDIUM";
+        tyreColor = COLOR_YELLOW;
+        break;
+      case 18:
+        tyreName = "HARD";
+        tyreColor = COLOR_WHITE;
+        break;
+      case 7:
+        tyreName = "INTER";
+        tyreColor = COLOR_GREEN;
+        break;
+      case 8:
+        tyreName = "WET";
+        tyreColor = COLOR_BLUE;
+        break;
       default: tyreName = "TYRE"; break;
     }
 
@@ -274,12 +313,30 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
 
       // Logik basierend auf VisualTyreID (F1 24 Standard)
       switch (tyreID) {
-        case 16: tempMin = 65; tempMax = 100; break; // Soft
-        case 17: tempMin = 70; tempMax = 105; break; // Medium
-        case 18: tempMin = 75; tempMax = 110; break; // Hard
-        case 7:  tempMin = 30; tempMax = 75;  break; // Inter
-        case 8:  tempMin = 20; tempMax = 65;  break; // Wet
-        default: tempMin = 65; tempMax = 100; break; 
+        case 16:
+          tempMin = 65;
+          tempMax = 100;
+          break;  // Soft
+        case 17:
+          tempMin = 70;
+          tempMax = 105;
+          break;  // Medium
+        case 18:
+          tempMin = 75;
+          tempMax = 110;
+          break;  // Hard
+        case 7:
+          tempMin = 30;
+          tempMax = 75;
+          break;  // Inter
+        case 8:
+          tempMin = 20;
+          tempMax = 65;
+          break;  // Wet
+        default:
+          tempMin = 65;
+          tempMax = 100;
+          break;
       }
 
       if (t[i] > tempMax) color = COLOR_RED;
