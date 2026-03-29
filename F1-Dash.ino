@@ -150,6 +150,7 @@ void loop() {
     lBarW = 0;
     lErs = -1.0;
     lDelta = 99.0;
+    lFuel = 1.0;
     lVisualTyreID = 99; 
     for (int i = 0; i < 4; i++) {
       lT[i] = 0;
@@ -256,10 +257,10 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
     gfx->setTextSize(2);
     gfx->setCursor(15, 210);
     gfx->setTextColor(COLOR_BLACK);
-    gfx->print("F: " + String(lFuel, 1));
+    gfx->print("F: " + String(lFuel, 2));
     gfx->setCursor(15, 210);
     gfx->setTextColor(COLOR_WHITE);
-    gfx->print("F: " + String(fuel, 1));
+    gfx->print("F: " + String(fuel, 2));
     lFuel = fuel;
   }
 }
