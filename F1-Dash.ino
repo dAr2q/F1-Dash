@@ -132,7 +132,7 @@ void config_mode() {
   gfx->setTextSize(2);
   gfx->setCursor(30, 90);
   gfx->setTextColor(COLOR_WHITE);
-  gfx->print("Connect To AP:");
+  gfx->print("If No Connect. Use AP:");
   gfx->setCursor(30, 115);
   gfx->setTextColor(COLOR_GREEN);
   gfx->print(RPM_CFG);
