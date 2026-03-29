@@ -89,6 +89,10 @@ void setup() {
     gfx->setCursor(20, 210);
     gfx->setTextColor(COLOR_GREEN);
     gfx->print("connected");
+    delay(250);
+    gfx->setCursor(80, 210);
+    gfx->setTextColor(COLOR_YELLOW);
+    gfx->print(WiFi.localIP());
     for (int i = 5; i < 10; i++) {
       leds[i] = (i < NUM_LEDS) ? CRGB::Red : CRGB::Black;
     }
