@@ -12,7 +12,7 @@
 - Connect to F1-Dash AP on your Mobile 
 - Set up the SSID and Password
 
-- Ingame set Telemetry to IP from ESP and Frequency to 60Hz
+- Ingame set Telemetry to IP from ESP and Frequency to 30Hz
 - Set Protocol to F1 2025
  
 - For Config press BOOT Button and open either Website or connect to AP
@@ -21,13 +21,14 @@
 
 - Currently only tested on ESP32-2432S028 CYD2USB ILI3941 Display
 - Last LED from WS2812 currently not used but you can only get 2x8 Strips (in my case)
+- Tyre wear stuck at 0%
 
 
 # **Legal Notice**
 
 - This Project was created using Help from Gemini and modified by me
 
-F1® 24 Game - an official product of the FIA Formula One World Championship™.
+F1® 25 Game - an official product of the FIA Formula One World Championship™.
 
 The F1 Formula 1 logo, F1 logo, Formula 1, F1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND
 PRIX and related marks are trademarks of Formula One Licensing BV, a Formula 1 company. © 2025
