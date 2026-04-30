@@ -245,10 +245,10 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, floa
     gfx->setTextSize(2);
     gfx->setCursor(245, 210);
     gfx->setTextColor(COLOR_BLACK);
-    gfx->print(String(lDelta, 2));
+    gfx->print(String(lDelta, 3));
     gfx->setCursor(245, 210);
     gfx->setTextColor(delta <= 0 ? COLOR_GREEN : COLOR_RED);
-    gfx->print(String(delta, 2));
+    gfx->print(String(delta, 3));
     lDelta = delta;
   }
 
@@ -331,12 +331,12 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
           tempMax = 110;
           break;  // Hard
         case 7:
-          tempMin = 30;
+          tempMin = 40;
           tempMax = 75;
           break;  // Inter
         case 8:
-          tempMin = 20;
-          tempMax = 65;
+          tempMin = 35;
+          tempMax = 70;
           break;  // Wet
         default:
           tempMin = 65;
