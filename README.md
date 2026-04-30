@@ -1,4 +1,4 @@
-# F1-Dash for F1 24/25 based on ESP32 and WS2812
+# F1-Dash for F1 24 based on ESP32 and WS2812
 
 - Based on [f1-24-udp](https://github.com/MacManley/f1-24-udp)
 - FastLED from [FastLED](https://github.com/FastLED/FastLED)
@@ -12,7 +12,7 @@
 - Connect to F1-Dash AP on your Mobile 
 - Set up the SSID and Password
 
-- Ingame set Telemetry to IP from ESP and Frequency to 60Hz
+- Ingame set Telemetry to IP from ESP and Frequency to 30Hz
 - Set Protocol to F1 2024
  
 - For Config press BOOT Button and open either Website or connect to AP
@@ -21,6 +21,7 @@
 
 - Currently only tested on ESP32-2432S028 CYD2USB ILI3941 Display
 - Last LED from WS2812 currently not used but you can only get 2x8 Strips (in my case)
+- If used with F1 24 LEDS dont work
 
 
 # **Legal Notice**
