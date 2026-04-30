@@ -2,7 +2,7 @@
 #include "PacketCarDamageData.h"
 #include <cstring>
 
-const int CARDAMAGE_BUFFER_SIZE = 953;
+const int CARDAMAGE_BUFFER_SIZE = 1041;
 
 PacketCarDamageData::PacketCarDamageData()
 : PHeader()

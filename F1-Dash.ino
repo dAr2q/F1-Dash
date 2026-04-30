@@ -3,7 +3,7 @@
 #include <WiFiUdp.h>
 #include <Arduino_GFX_Library.h>
 #include <XPT2046_Touchscreen.h>
-#include <src/F1_24_UDP.h>  //Library MacManley/F1_24_UDP
+#include <src/F1_25_UDP.h>  //Library MacManley/F1_25_UDP
 #include <FastLED.h>
 
 #define NUM_LEDS 15
@@ -35,7 +35,7 @@ const char* RPM_CFG = "F1-Dash-Config";
 SPIClass kniSpi = SPIClass(VSPI);
 XPT2046_Touchscreen touch(XPT2046_CS, XPT2046_IRQ);
 
-F1_24_Parser* parser;
+F1_25_Parser* parser;
 int currentScreen = 0;
 unsigned long lastTouch = 0;
 
@@ -84,7 +84,7 @@ void setup() {
 
   switch (WiFi.status()) {
     case WL_CONNECTED:
-    parser = new F1_24_Parser();
+    parser = new F1_25_Parser();
     gfx->setTextSize(1);
     gfx->setCursor(20, 210);
     gfx->setTextColor(COLOR_GREEN);

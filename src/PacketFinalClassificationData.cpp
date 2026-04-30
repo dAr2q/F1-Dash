@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int FINALCLASSIFICATION_BUFFER_SIZE = 1020;
+const int FINALCLASSIFICATION_BUFFER_SIZE = 1042;
 
 PacketFinalClassificationData::PacketFinalClassificationData()
 : PHeader()

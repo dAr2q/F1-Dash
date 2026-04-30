@@ -7,6 +7,12 @@
 
 #pragma pack(push, 1)
 
+struct LiveryColour {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+};
+
 struct ParticipantData
 {
     uint8_t m_aiControlled; // Whether the vehicle is AI (1) or Human (0) controlled
@@ -16,12 +22,14 @@ struct ParticipantData
     uint8_t m_myTeam; // My team flag – 1 = My Team, 0 = otherwise
     uint8_t m_raceNumber; // Race number of the car
     uint8_t m_nationality; // Nationality of the driver
-    char m_name[48]; // Name of participant in UTF-8 format – null terminated
+    char m_name[32]; // Name of participant in UTF-8 format – null terminated
     // Will be truncated with … (U+2026) if too long
     uint8_t m_yourTelemetry; // The player's UDP setting, 0 = restricted, 1 = public
     uint8_t m_showOnlineNames; // Online names
     uint16_t m_techLevel; // F1 World tech level
     uint8_t m_platform; // Show platform (crossplay)
+    uint8_t m_numColours;
+    LiveryColour m_liveryColours[4];
 };
 
 class PacketParticipantData : public PHeader

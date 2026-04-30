@@ -17,6 +17,10 @@ struct FinalClassificationData
     uint8_t m_resultStatus; // Result status - 0 = invalid, 1 = inactive, 2 = active
     // 3 = finished, 4 = DNF, 5 = disqualified
     // 6 = not classified, 7 = retired
+    uint8_t m_resultReason; // Result reason - 0 = invalid, 1 = retired, 2 = finished
+    // 3 = terminal damage, 4 = inactive, 5 = not enough laps completed
+    // 6 = black flagged, 7 = red flagged, 8 = mechanical failure
+    // 9 = session skipped, 10 = session simulated
     uint32_t m_bestLapTimeInMS; // Best lap time of the session in milliseconds
     double m_totalRaceTime; // Total race time in seconds without penalties
     uint8_t m_penaltiesTime; // Total penalties accumulated in seconds

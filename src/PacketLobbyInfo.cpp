@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int LOBBYINFO_BUFFER_SIZE = 1306;
+const int LOBBYINFO_BUFFER_SIZE = 954;
 
 PacketLobbyInfo::PacketLobbyInfo()
 : PHeader()

@@ -1,7 +1,7 @@
-// File: F1_24_UDP.cpp
+// File: F1_25_UDP.cpp
 #include <stdio.h>
 
-#include "F1_24_UDP.h"
+#include "F1_25_UDP.h"
 #include <WiFiUdp.h>
 #include "PacketMotionData.h"
 #include "PacketSessionData.h"
@@ -18,12 +18,14 @@
 #include "PacketMotionEX.h"
 #include "PacketTyreSetData.h"
 #include "PacketTimeTrialData.h"
+#include "PacketTimeTrialData.h"
+#include "PacketLapPositions.h"
 
-constexpr unsigned int localPort = 20777;
+unsigned int localPort;
 
 WiFiUDP Udp;
 
-F1_24_Parser::F1_24_Parser()
+F1_25_Parser::F1_25_Parser()
 {
     packetMotionData_ = new PacketMotionData();
     packetSessionData_ = new PacketSessionData();
@@ -40,9 +42,10 @@ F1_24_Parser::F1_24_Parser()
     packetTyreSetData_ = new PacketTyreSetData();
     packetMotionEXData_ = new PacketMotionEXData();
     packetTimeTrialData_ = new PacketTimeTrialData();
+    packetLapPositionsData_ = new PacketLapPositionsData();
 }
 
-F1_24_Parser::~F1_24_Parser()
+F1_25_Parser::~F1_25_Parser()
 {
     delete packetMotionData_;
     delete packetSessionData_;
@@ -59,13 +62,15 @@ F1_24_Parser::~F1_24_Parser()
     delete packetTyreSetData_;
     delete packetMotionEXData_;
     delete packetTimeTrialData_;
+    delete packetLapPositionsData_;
 }
 
-void F1_24_Parser::begin(void) {
-    Udp.begin(localPort);
+void F1_25_Parser::begin(int port) {
+    Udp.begin(port);
+    localPort = port;
 }
 
-void F1_24_Parser::read(void) {
+void F1_25_Parser::read(void) {
     int packetSize = Udp.parsePacket(); 
     if (packetSize) {
         char packetBuffer[packetSize];
@@ -77,7 +82,7 @@ void F1_24_Parser::read(void) {
     }
 }
 
-void F1_24_Parser::push(char * rcvBuffer)
+void F1_25_Parser::push(char * rcvBuffer)
 {
     PHeader* P = new PHeader();
     P->push(rcvBuffer);
@@ -113,82 +118,89 @@ void F1_24_Parser::push(char * rcvBuffer)
             break;
         case 14: packetTimeTrialData_->push(rcvBuffer);
             break;
+        case 15: packetLapPositionsData_->push(rcvBuffer);
+            break;
         default:;
     }
     delete P;
 }
 
-PacketMotionData* F1_24_Parser::packetMotionData(void)
+PacketMotionData* F1_25_Parser::packetMotionData(void)
 {
     return packetMotionData_;
 }
 
-PacketSessionData* F1_24_Parser::packetSessionData(void)
+PacketSessionData* F1_25_Parser::packetSessionData(void)
 {
     return packetSessionData_;
 }
 
-PacketLapData* F1_24_Parser::packetLapData(void)
+PacketLapData* F1_25_Parser::packetLapData(void)
 {
     return packetLapData_;
 }
 
-PacketEventData* F1_24_Parser::packetEventData(void)
+PacketEventData* F1_25_Parser::packetEventData(void)
 {
     return packetEventData_;
 }
 
-PacketParticipantData* F1_24_Parser::packetParticipantData(void)
+PacketParticipantData* F1_25_Parser::packetParticipantData(void)
 {
     return packetParticipantData_;
 }
 
-PacketCarSetupData* F1_24_Parser::packetCarSetupData(void)
+PacketCarSetupData* F1_25_Parser::packetCarSetupData(void)
 {
     return packetCarSetupData_;
 }
 
-PacketCarTelemetryData* F1_24_Parser::packetCarTelemetryData(void)
+PacketCarTelemetryData* F1_25_Parser::packetCarTelemetryData(void)
 {
     return packetCarTelemetryData_;
 }
 
-PacketCarStatusData* F1_24_Parser::packetCarStatusData(void)
+PacketCarStatusData* F1_25_Parser::packetCarStatusData(void)
 {
     return packetCarStatusData_;
 }
 
-PacketFinalClassificationData* F1_24_Parser::packetFinalClassificationData(void)
+PacketFinalClassificationData* F1_25_Parser::packetFinalClassificationData(void)
 {
     return packetFinalClassificationData_;
 }
 
-PacketLobbyInfo* F1_24_Parser::packetLobbyData(void)
+PacketLobbyInfo* F1_25_Parser::packetLobbyData(void)
 {
     return packetLobbyData_;
 }
 
-PacketCarDamageData* F1_24_Parser::packetCarDamageData(void)
+PacketCarDamageData* F1_25_Parser::packetCarDamageData(void)
 {
     return packetCarDamageData_;
 }
 
-PacketSessionHistoryData* F1_24_Parser::packetSessionHistoryData(void)
+PacketSessionHistoryData* F1_25_Parser::packetSessionHistoryData(void)
 {
     return packetSessionHistoryData_;
 }
 
-PacketTyreSetData* F1_24_Parser::packetTyreSetData(void)
+PacketTyreSetData* F1_25_Parser::packetTyreSetData(void)
 {
     return packetTyreSetData_;
 }
 
-PacketMotionEXData* F1_24_Parser::packetMotionEXData(void)
+PacketMotionEXData* F1_25_Parser::packetMotionEXData(void)
 {
     return packetMotionEXData_;
 }
 
-PacketTimeTrialData* F1_24_Parser::packetTimeTrialData(void)
+PacketTimeTrialData* F1_25_Parser::packetTimeTrialData(void)
 {
     return packetTimeTrialData_;
+}
+
+PacketLapPositionsData* F1_25_Parser::packetLapPositionsData(void)
+{
+    return packetLapPositionsData_;
 }

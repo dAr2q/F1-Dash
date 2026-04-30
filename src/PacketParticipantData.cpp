@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int PARTICIPANT_BUFFER_SIZE = 1350;
+const int PARTICIPANT_BUFFER_SIZE = 1284;
 
 PacketParticipantData::PacketParticipantData()
 : PHeader()

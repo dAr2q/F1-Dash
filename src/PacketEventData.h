@@ -20,7 +20,17 @@ union EventDataDetails
     struct
     {
         uint8_t vehicleIdx; // Vehicle index of car retiring
+        uint8_t reason; // Reason - 0 = invalid, 1 = retired, 2 = finished
+        // 3 = terminal damage, 4 = inactive, 5 = not enough laps completed
+        // 6 = black flagged, 7 = red flagged, 8 = mechanical failure
+        // 9 = session skipped, 10 = session simulated
     } Retirement;
+
+    struct 
+    {
+        uint8_t reason; // 0 = Wet track, 1 = Safety car deployed, 2 = Red flag
+        // 3 = Min lap not reached
+    } DRSDisabled;
 
     struct
     {
@@ -66,6 +76,7 @@ union EventDataDetails
     struct
     {
         uint8_t vehicleIdx; // Vehicle index of the vehicle serving stop go
+        float stopTime;
     } StopGoPenaltyServed;
 
     struct
