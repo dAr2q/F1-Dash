@@ -21,7 +21,7 @@
 
 - Currently only tested on ESP32-2432S028 CYD2USB ILI3941 Display
 - Last LED from WS2812 currently not used but you can only get 2x8 Strips (in my case)
-- If used with F1 24 LEDS dont work
+- If used with F1 25 LEDS dont work
 
 
 # **Legal Notice**
