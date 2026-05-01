@@ -46,7 +46,6 @@ int lBarW = 0;
 float lFuel = -1.0;
 float lDelta = 99.0;
 float lErs = -1.0;
-uint8_t lPos = 0;
 uint8_t lT[4] = { 0, 0, 0, 0 };
 uint8_t lWear[4] = { 0, 0, 0, 0 };
 uint8_t lVisualTyreID = 99; // Wichtig für Erkennung Mischungswechsel & Screen-Reset
@@ -190,9 +189,8 @@ void loop() {
     float fuel = parser->packetCarStatusData()->m_carStatusData(pIdx).m_fuelRemainingLaps;
     float ers = parser->packetCarStatusData()->m_carStatusData(pIdx).m_ersStoreEnergy;
     float delta = (float)parser->packetLapData()->m_lapData(pIdx).m_deltaToCarInFrontInMSPart / 1000.0f;
-    uint8_t pos = parser->packetLapData()->m_lapData(pIdx).m_carPosition;
 
-    drawF1Dash(speed, gear, fuel, delta, pos, ers);
+    drawF1Dash(speed, gear, fuel, delta, ers);
   } else {
     // --- TYRE DASH ---
     uint8_t t[4], w[4];
@@ -206,7 +204,7 @@ void loop() {
   FastLED.show();
 }
 
-void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, uint8_t pos, float ers) {
+void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, float ers) {
   // Gear
   if (g != lGear) {
     gfx->setTextSize(10);
