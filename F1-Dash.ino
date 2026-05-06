@@ -49,6 +49,7 @@ float lErs = -1.0;
 uint8_t lT[4] = { 0, 0, 0, 0 };
 uint8_t lWear[4] = { 0, 0, 0, 0 };
 uint8_t lVisualTyreID = 99; // Wichtig für Erkennung Mischungswechsel & Screen-Reset
+uint8_t lActualTyreID = 99;  // C1,C2,C3,C4,C5,Inter,Wet Tyres for Temperature setting
 
 void setup() {
   Serial.begin(115200);
@@ -126,7 +127,7 @@ void config_mode() {
   gfx->setTextSize(3);
   gfx->setCursor(20, 55);
   gfx->setTextColor(COLOR_WHITE);
-  gfx->print("F1-Dash");
+  gfx->print("F1-Dash 2025");
   delay(250);
   gfx->setTextSize(2);
   gfx->setCursor(30, 90);
@@ -151,6 +152,7 @@ void loop() {
     lDelta = 99.0;
     lFuel = 1.0;
     lVisualTyreID = 99; 
+    lActualTyreID = 99;
     for (int i = 0; i < 4; i++) {
       lT[i] = 0;
       lWear[i] = 0;
@@ -195,11 +197,12 @@ void loop() {
     // --- TYRE DASH ---
     uint8_t t[4], w[4];
     uint8_t visualTyreID = parser->packetCarStatusData()->m_carStatusData(pIdx).m_visualTyreCompound;
+    uint8_t actualTyreID = parser->packetCarStatusData()->m_carStatusData(pIdx).m_actualTyreCompound;
     for (int i = 0; i < 4; i++) {
       t[i] = parser->packetCarTelemetryData()->m_carTelemetryData(pIdx).m_tyresInnerTemperature[i];
       w[i] = (uint8_t)parser->packetCarDamageData()->m_carDamageData(pIdx).m_tyresWear[i];
     }
-    drawTyreDash(t, w, visualTyreID);
+    drawTyreDash(t, w, visualTyreID, actualTyreID);
   }
   FastLED.show();
 }
@@ -263,13 +266,13 @@ void drawF1Dash(uint16_t s, int8_t g, float fuel, float delta, float ers) {
   }
 }
 
-void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
+void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID, uint8_t tyreID2) {
   int x[4] = { 45, 195, 45, 195 };
   int y[4] = { 135, 135, 45, 45 };
 
   // --- REIFENTYP ANZEIGE (Zentriert auf 320px) ---
   if (tyreID != lVisualTyreID) {
-    gfx->fillRect(80, 5, 160, 30, COLOR_BLACK); 
+    gfx->fillRect(80, 5, 320, 30, COLOR_BLACK);
     
     String tyreName = "";
     uint16_t tyreColor = COLOR_WHITE;
@@ -307,34 +310,78 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
     gfx->setCursor(160 - (w_text / 2), 10); 
     gfx->print(tyreName);
   }
+  if (tyreID2 != lActualTyreID) {
+
+    String tyreComp = "";
+    switch (tyreID2) {
+      case 16:
+        tyreComp = "C5";
+        break;
+      case 17:
+        tyreComp = "C4";
+        break;
+      case 18:
+        tyreComp = "C3";
+        break;
+      case 19:
+        tyreComp = "C2";
+        break;
+      case 20:
+        tyreComp = "C1";
+        break;
+      case 21:
+        tyreComp = "C0";
+        break;
+      case 22:
+        tyreComp = "C6";
+        break;
+      default: tyreComp = ""; break;
+    }
+    gfx->setTextSize(2);
+    gfx->setCursor(240, 10);
+    gfx->print(tyreComp);
+  }
+
 
   for (int i = 0; i < 4; i++) {
-    if (t[i] != lT[i] || w[i] != lWear[i] || tyreID != lVisualTyreID) {
+    if (t[i] != lT[i] || w[i] != lWear[i] || tyreID2 != lActualTyreID) {
 
       uint16_t color;
       int tempMin, tempMax;
 
-      // Logik basierend auf VisualTyreID (F1 24 Standard)
-      switch (tyreID) {
+      // Logik basierend auf ActualTyreID (F1 24 Standard)
+      switch (tyreID2) {
         case 16:
-          tempMin = 65;
-          tempMax = 100;
-          break;  // Soft
+          tempMin = 66;
+          tempMax = 106;
+          break;  // C5
         case 17:
-          tempMin = 70;
-          tempMax = 105;
-          break;  // Medium
+          tempMin = 76;
+          tempMax = 106;
+          break;  // C4
         case 18:
-          tempMin = 75;
-          tempMax = 110;
-          break;  // Hard
+          tempMin = 76;
+          tempMax = 116;
+          break;  // C3
+        case 19:  
+          tempMin = 86;
+          tempMax = 126;
+          break;  // C2
+        case 20:  
+          tempMin = 96;
+          tempMax = 126;
+          break;  // C1
+        case 22:  
+          tempMin = 56;
+          tempMax = 96;
+          break;  // C6
         case 7:
-          tempMin = 40;
-          tempMax = 75;
+          tempMin = 46;
+          tempMax = 106;
           break;  // Inter
         case 8:
-          tempMin = 35;
-          tempMax = 70;
+          tempMin = 36;
+          tempMax = 96;
           break;  // Wet
         default:
           tempMin = 65;
@@ -363,6 +410,7 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID) {
     }
   }
   lVisualTyreID = tyreID;
+  lActualTyreID = tyreID2;
 }
 
 void updateRevLights(uint16_t bits) {
