@@ -26,9 +26,9 @@ struct FinalClassificationData
     uint8_t m_penaltiesTime; // Total penalties accumulated in seconds
     uint8_t m_numPenalties; // Number of penalties applied to this driver
     uint8_t m_numTyreStints; // Number of tyres stints up to maximum
-    uint8_t m_tyreStintsActual[8]; // Actual tyres used by this driver
-    uint8_t m_tyreStintsVisual[8]; // Visual tyres used by this driver
-    uint8_t m_tyreStintsEndLaps[8]; // The lap number stints end on
+    uint8_t m_tyreStintsActual[cs_maxTyreStints]; // Actual tyres used by this driver
+    uint8_t m_tyreStintsVisual[cs_maxTyreStints]; // Visual tyres used by this driver
+    uint8_t m_tyreStintsEndLaps[cs_maxTyreStints]; // The lap number stints end on
 };
 
 class PacketFinalClassificationData : public PHeader
@@ -42,7 +42,7 @@ public:
 
 private:
     uint8_t m_numCars_; // Number of cars in the final classification
-    FinalClassificationData m_classificationData_[22];
+    FinalClassificationData m_classificationData_[cs_maxNumCarsInUDPData];
 };
 #pragma pack(pop)
 

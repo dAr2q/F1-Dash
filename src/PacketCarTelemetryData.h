@@ -22,7 +22,7 @@ struct CarTelemetryData
     uint16_t m_brakesTemperature[4]; // Brakes temperature (celsius)
     uint8_t m_tyresSurfaceTemperature[4]; // Tyres surface temperature (celsius)
     uint8_t m_tyresInnerTemperature[4]; // Tyres inner temperature (celsius)
-    uint16_t m_engineTemperature; // Engine temperature (celsius)
+    uint8_t m_engineTemperature; // Engine temperature (celsius)
     float m_tyresPressure[4]; // Tyres pressure (PSI)
     uint8_t m_surfaceType[4]; // Driving surface, see appendices
 };
@@ -44,7 +44,7 @@ public:
     void push(char *receiveBuffer);
 
 private:
-    CarTelemetryData m_carTelemetryData_[22];
+    CarTelemetryData m_carTelemetryData_[cs_maxNumCarsInUDPData];
     uint8_t m_mfdPanelIndex_; // Index of MFD panel open - 255 = MFD closed
     // Single player, race – 0 = Car setup, 1 = Pits
     // 2 = Damage, 3 =  Engine, 4 = Temperatures

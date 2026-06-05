@@ -7,6 +7,8 @@
 
 #pragma pack(push, 1)
 
+static const uint8_t cs_maxNumLapsInLapPositionsHistoryPacket = 50;
+
 class PacketLapPositionsData : public PHeader
 {
 public:
@@ -20,7 +22,7 @@ public:
 private:
     uint8_t m_numLaps_;
     uint8_t m_lapStart_;
-    uint8_t m_lapPositionsData_[50][22]; //Players car only
+    uint8_t m_lapPositionsData_[cs_maxNumLapsInLapPositionsHistoryPacket][cs_maxNumCarsInUDPData]; //Players car only
 };
 #pragma pack(pop)
 

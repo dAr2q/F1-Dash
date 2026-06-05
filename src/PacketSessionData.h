@@ -7,10 +7,28 @@
 
 #pragma pack(push, 1)
 
+static const uint32_t     cs_maxMarshalZonesPerLap = 21;
+static const uint32_t     cs_maxActiveAeroZonesPerLap = 8;
+static const uint32_t     cs_maxDRSZonesPerLap = 4;
+static const uint32_t     cs_maxWeatherForecastSamples = 64;
+static const uint32_t     cs_maxSessionsInWeekend = 12;
+
 struct MarshalZone
 {
     float m_zoneStart; // Fraction (0..1) of way through the lap the marshal zone starts
     int8_t m_zoneFlag; // -1 = invalid/unknown, 0 = none, 1 = green, 2 = blue, 3 = yellow, 4 = red
+};
+
+struct ActiveAeroZone
+{
+    float       m_zoneStart;        // Fraction (0..1) of way through the lap the Active Aero zone starts
+    float       m_zoneEnd;          // Fraction (0..1) of way through the lap the Active Aero zone ends
+};
+
+struct DRSZone
+{
+    float       m_zoneStart;        // Fraction (0..1) of way through the lap the DRS zone starts
+    float       m_zoneEnd;          // Fraction (0..1) of way through the lap the DRS zone ends
 };
 
 struct WeatherForecastSample
@@ -140,12 +158,12 @@ private:
     uint8_t m_spectatorCarIndex_; // Index of the car being spectated
     uint8_t m_sliProNativeSupport_; // SLI Pro support, 0 = inactive, 1 = active
     uint8_t m_numMarshalZones_; // Number of marshal zones to follow
-    MarshalZone m_marshalZones_[21]; // List of marshal zones – max 21
+    MarshalZone m_marshalZones_[cs_maxMarshalZonesPerLap]; // List of marshal zones – max 21
     uint8_t m_safetyCarStatus_; // 0 = no safety car, 1 = full
     // 2 = virtual, 3 = formation lap
     uint8_t m_networkGame_; // 0 = offline, 1 = online
     uint8_t m_numWeatherForecastSamples_; // Number of weather samples to follow
-    WeatherForecastSample m_weatherForecastSamples_[64]; // Array of weather forecast samples
+    WeatherForecastSample m_weatherForecastSamples_[cs_maxWeatherForecastSamples]; // Array of weather forecast samples
     uint8_t m_forecastAccuracy_; // 0 = Perfect, 1 = Approximate
     uint8_t m_aiDifficulty_; // AI Difficulty rating – 0-110
     uint32_t m_seasonLinkIdentifier_; // Identifier for season - persists across saves
@@ -200,7 +218,7 @@ private:
     uint8_t m_affectsLicenceLevelSolo_; // 0 = Off, 1 = On
     uint8_t m_affectsLicenceLevelMP_; // 0 = Off, 1 = On
     uint8_t m_numSessionsInWeekend_; // Number of session in following array
-    uint8_t m_weekendStructure_[12]; // List of session types to show weekend
+    uint8_t m_weekendStructure_[cs_maxSessionsInWeekend]; // List of session types to show weekend
 // structure - see appendix for types
     float m_sector2LapDistanceStart_; // Distance in m around track where sector 2 starts
     float m_sector3LapDistanceStart_; // Distance in m around track where sector 3 starts

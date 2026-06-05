@@ -44,7 +44,7 @@ public:
     void push(char *receiveBuffer);
 
 private:
-    CarSetupData m_carSetups_[22];
+    CarSetupData m_carSetups_[cs_maxNumCarsInUDPData];
     float m_nextFrontWingValue_;
 };
 #pragma pack(pop)

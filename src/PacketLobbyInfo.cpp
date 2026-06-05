@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int LOBBYINFO_BUFFER_SIZE = 954;
+const int LOBBYINFO_BUFFER_SIZE = 1133;
 
 PacketLobbyInfo::PacketLobbyInfo()
 : PHeader()
@@ -24,7 +24,7 @@ uint8_t PacketLobbyInfo::m_numofCars(void)
 
 LobbyInfoData PacketLobbyInfo::m_lobbyPlayers(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_lobbyPlayers_[index];
     else return LobbyInfoData{};
 }

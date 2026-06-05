@@ -2,7 +2,7 @@
 #include "PacketTimeTrialData.h"
 #include <cstring>
 
-const int TIMETRIAL_BUFFER_SIZE = 101;
+const int TIMETRIAL_BUFFER_SIZE = 104;
 
 PacketTimeTrialData::PacketTimeTrialData()
 : PHeader()

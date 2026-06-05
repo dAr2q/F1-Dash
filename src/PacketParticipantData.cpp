@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int PARTICIPANT_BUFFER_SIZE = 1284;
+const int PARTICIPANT_BUFFER_SIZE = 1470;
 
 PacketParticipantData::PacketParticipantData()
 : PHeader()
@@ -24,7 +24,7 @@ uint8_t PacketParticipantData::m_numActiveCars(void)
 
 ParticipantData PacketParticipantData::m_participants(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_participants_[index];
     else return ParticipantData{};
 }

@@ -42,7 +42,7 @@ public:
     void push(char *receiveBuffer);
 
 private:
-    CarDamageData m_carDamageData_[22];
+    CarDamageData m_carDamageData_[cs_maxNumCarsInUDPData];
 };
 #pragma pack(pop)
 

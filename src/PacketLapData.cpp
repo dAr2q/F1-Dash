@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int LAPDATA_BUFFER_SIZE = 1285;
+const int LAPDATA_BUFFER_SIZE = 1399;
 
 PacketLapData::PacketLapData()
 : PHeader()
@@ -29,7 +29,7 @@ uint8_t PacketLapData::m_timeTrialRivalCarIdx(void)
 
 LapData PacketLapData::m_lapData(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_lapData_[index];
     else return LapData{};
 }

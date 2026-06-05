@@ -7,6 +7,8 @@
 
 #pragma pack(push, 1)
 
+static const uint8_t cs_maxNumLapsInHistory = 100;
+
 struct LapHistoryData
 {
     uint32_t m_lapTimeInMS; // Lap time in milliseconds
@@ -53,8 +55,8 @@ private:
     uint8_t m_bestSector2LapNum_; // Lap the best Sector 2 time was achieved on
     uint8_t m_bestSector3LapNum_; // Lap the best Sector 3 time was achieved on
 
-    LapHistoryData m_lapHistoryData_[100]; // 100 laps of data max
-    TyreStintHistoryData m_tyreStintsHistoryData_[8]; // Stint history
+    LapHistoryData m_lapHistoryData_[cs_maxNumLapsInHistory]; // 100 laps of data max
+    TyreStintHistoryData m_tyreStintsHistoryData_[cs_maxTyreStints]; // Stint history
 
 };
 #pragma pack(pop)

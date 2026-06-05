@@ -9,7 +9,7 @@
 
 struct TimeTrialDataSet {
     uint8_t m_carIdx; // Index of the car this data relates to
-    uint8_t m_teamId; // Team id - see appendix
+    uint16_t m_teamId; // Team id - see appendix
     uint32_t m_lapTimeInMS; // Lap time in milliseconds
     uint32_t m_sector1TimeInMS; // Sector 1 time in milliseconds
     uint32_t m_sector2TimeInMS; // Sector 2 time in milliseconds

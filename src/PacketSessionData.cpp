@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int SESSION_BUFFER_SIZE = 753;
+const int SESSION_BUFFER_SIZE = 926;
 
 PacketSessionData::PacketSessionData()
 : PHeader()

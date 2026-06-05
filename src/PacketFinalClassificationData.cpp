@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int FINALCLASSIFICATION_BUFFER_SIZE = 1042;
+const int FINALCLASSIFICATION_BUFFER_SIZE = 1134;
 
 PacketFinalClassificationData::PacketFinalClassificationData()
 : PHeader()
@@ -24,7 +24,7 @@ uint8_t PacketFinalClassificationData::m_numCars(void)
 
 FinalClassificationData PacketFinalClassificationData::m_classificationData(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_classificationData_[index];
     else return FinalClassificationData{};
 }

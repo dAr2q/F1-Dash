@@ -43,6 +43,7 @@ struct CarStatusData
     // 2 = hotlap, 3 = overtake
     float m_ersHarvestedThisLapMGUK; // ERS energy harvested this lap by MGU-K
     float m_ersHarvestedThisLapMGUH; // ERS energy harvested this lap by MGU-H
+	float m_ersHarvestLimitPerLap;   // ERS energy harvest limit for this lap
     float m_ersDeployedThisLap; // ERS energy deployed this lap
     uint8_t m_networkPaused; // Whether the car is paused in a network game
 };
@@ -57,7 +58,7 @@ public:
 
 
 private:
-    CarStatusData m_carStatusData_[22];
+    CarStatusData m_carStatusData_[cs_maxNumCarsInUDPData];
 };
 #pragma pack(pop)
 

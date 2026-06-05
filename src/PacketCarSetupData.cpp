@@ -2,7 +2,7 @@
 #include "PacketCarSetupData.h"
 #include <cstring>
 
-const int CARSETUP_BUFFER_SIZE = 1133;
+const int CARSETUP_BUFFER_SIZE = 1233;
 
 PacketCarSetupData::PacketCarSetupData()
 : PHeader()
@@ -20,7 +20,7 @@ void PacketCarSetupData::push(char *receiveBuffer)
 
 CarSetupData PacketCarSetupData::m_carSetups(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_carSetups_[index];
     else return CarSetupData{};
 }

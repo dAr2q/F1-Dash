@@ -2,7 +2,7 @@
 #include "PacketLapPositions.h"
 #include <cstring>
 
-const int LAPPOSITIONS_BUFFER_SIZE = 1131;
+const int LAPPOSITIONS_BUFFER_SIZE = 1231;
 
 PacketLapPositionsData::PacketLapPositionsData()
 : PHeader()
@@ -18,7 +18,7 @@ void PacketLapPositionsData::push(char *receiveBuffer)
 
 uint8_t PacketLapPositionsData::m_lapPositionsData(int lapIndex, int carIdx)
 {
-        if (lapIndex < 50 && carIdx < 22) {
+        if (lapIndex < 50 && carIdx < 24) {
         return m_lapPositionsData_[lapIndex][carIdx];
         } else return {0};
 }

@@ -31,7 +31,7 @@ public:
 
 private:
     uint8_t m_carIdx_; // Index of the car this lap data relates to
-    TyreSetData m_tyresetData_[20]; // 13 (dry) + 7 (wet)
+    TyreSetData m_tyresetData_[cs_maxNumTyreSets]; // 13 (dry) + 7 (wet)
     uint8_t m_fittedIdx_; // Index into array of fitted tyre
 
 };

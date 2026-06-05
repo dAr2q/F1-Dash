@@ -3,7 +3,7 @@
 #include <WiFiUdp.h>
 #include <Arduino_GFX_Library.h>
 #include <XPT2046_Touchscreen.h>
-#include <src/F1_25_UDP.h>  //Library MacManley/F1_25_UDP
+#include <src/F1_26_UDP.h>  //Library MacManley/F1_26_UDP
 #include <FastLED.h>
 
 #define NUM_LEDS 15
@@ -35,7 +35,7 @@ const char* RPM_CFG = "F1-Dash-Config";
 SPIClass kniSpi = SPIClass(VSPI);
 XPT2046_Touchscreen touch(XPT2046_CS, XPT2046_IRQ);
 
-F1_25_Parser* parser;
+F1_26_Parser* parser;
 int currentScreen = 0;
 unsigned long lastTouch = 0;
 
@@ -49,7 +49,7 @@ float lErs = -1.0;
 uint8_t lT[4] = { 0, 0, 0, 0 };
 uint8_t lWear[4] = { 0, 0, 0, 0 };
 uint8_t lVisualTyreID = 99; // Wichtig für Erkennung Mischungswechsel & Screen-Reset
-uint8_t lActualTyreID = 99;  // C1,C2,C3,C4,C5,Inter,Wet Tyres for Temperature setting
+uint8_t lActualTyreID = 99;  // Tyres for Temperature setting
 
 void setup() {
   Serial.begin(115200);
@@ -84,7 +84,7 @@ void setup() {
 
   switch (WiFi.status()) {
     case WL_CONNECTED:
-    parser = new F1_25_Parser();
+    parser = new F1_26_Parser();
     gfx->setTextSize(1);
     gfx->setCursor(20, 210);
     gfx->setTextColor(COLOR_GREEN);
@@ -108,6 +108,8 @@ void setup() {
     gfx->setCursor(20, 210);
     gfx->setTextColor(COLOR_RED);
     gfx->print("connect fail");
+    delay(2000);
+    ESP.restart();
     break;
     default:
     gfx->setTextSize(1);
@@ -127,7 +129,7 @@ void config_mode() {
   gfx->setTextSize(3);
   gfx->setCursor(20, 55);
   gfx->setTextColor(COLOR_WHITE);
-  gfx->print("F1-Dash 2025");
+  gfx->print("F1-Dash 2026");
   delay(250);
   gfx->setTextSize(2);
   gfx->setCursor(30, 90);
@@ -298,6 +300,26 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID, uint8_t tyreID2) {
         tyreName = "WET";
         tyreColor = COLOR_BLUE;
         break;
+      case 19:
+        tyreName = "F2 SUPER SOFT";
+        tyreColor = COLOR_MAGENTA;
+        break;
+      case 20:
+        tyreName = "F2 SOFT";
+        tyreColor = COLOR_RED;
+        break;
+      case 21:
+        tyreName = "F2 MEDIUM";
+        tyreColor = COLOR_YELLOW;
+        break;
+      case 22:
+        tyreName = "F2 HARD";
+        tyreColor = COLOR_WHITE;
+        break;
+      case 15:
+        tyreName = "F2 WET";
+        tyreColor = COLOR_BLUE;
+        break;
       default: tyreName = "TYRE"; break;
     }
 
@@ -335,6 +357,11 @@ void drawTyreDash(uint8_t t[], uint8_t w[], uint8_t tyreID, uint8_t tyreID2) {
       case 22:
         tyreComp = "C6";
         break;
+      case 11:
+      case 12:
+      case 13:
+      case 14:
+      case 15:
       default: tyreComp = ""; break;
     }
     gfx->setTextSize(2);

@@ -1,6 +1,6 @@
-// File: F1_25_UDP.h
-#ifndef F1_25_UDP_H
-#define F1_25_UDP_H
+// File: F1_26_UDP.h
+#ifndef F1_26_UDP_H
+#define F1_26_UDP_H
 
 #include "PacketSessionHistoryData.h"
 #include "PacketMotionData.h"
@@ -20,11 +20,11 @@
 #include "PacketTimeTrialData.h"
 #include "PacketLapPositions.h"
 
-class F1_25_Parser
+class F1_26_Parser
 {
 public:
-    F1_25_Parser();
-    virtual ~F1_25_Parser();
+    F1_26_Parser();
+    virtual ~F1_26_Parser();
     void read(void);
     void begin(int port);
     PacketMotionData* packetMotionData(void);

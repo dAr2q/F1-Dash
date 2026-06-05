@@ -2,7 +2,7 @@
 #include "PacketCarDamageData.h"
 #include <cstring>
 
-const int CARDAMAGE_BUFFER_SIZE = 1041;
+const int CARDAMAGE_BUFFER_SIZE = 1133;
 
 PacketCarDamageData::PacketCarDamageData()
 : PHeader()
@@ -18,7 +18,7 @@ void PacketCarDamageData::push(char *receiveBuffer)
 
 CarDamageData PacketCarDamageData::m_carDamageData(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_carDamageData_[index];
     else return CarDamageData{};
 }

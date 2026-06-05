@@ -20,9 +20,9 @@ struct CarMotionData
     int16_t m_worldRightDirX; // World space right X direction (normalised)
     int16_t m_worldRightDirY; // World space right Y direction (normalised)
     int16_t m_worldRightDirZ; // World space right Z direction (normalised)
-    float m_gForceLateral; // Lateral G-Force component
-    float m_gForceLongitudinal; // Longitudinal G-Force component
-    float m_gForceVertical; // Vertical G-Force component
+    int16_t m_gForceLateral; // Lateral G-Force component
+    int16_t m_gForceLongitudinal; // Longitudinal G-Force component
+    int16_t m_gForceVertical; // Vertical G-Force component
     float m_yaw; // Yaw angle in radians
     float m_pitch; // Pitch angle in radians
     float m_roll; // Roll angle in radians
@@ -37,7 +37,7 @@ public:
     void push(char *receiveBuffer);
 
 private:
-    CarMotionData m_carMotionData_[22]; //22 elements
+    CarMotionData m_carMotionData_[cs_maxNumCarsInUDPData]; // Data for all cars on track
 };
 #pragma pack(pop)
 

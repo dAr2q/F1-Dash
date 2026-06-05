@@ -3,7 +3,7 @@
 #include <inttypes.h>
 #include <cstring>
 
-const int CARTELEMETRY_BUFFER_SIZE = 1352;
+const int CARTELEMETRY_BUFFER_SIZE = 1448;
 
 PacketCarTelemetryData::PacketCarTelemetryData()
 : PHeader()
@@ -20,7 +20,7 @@ void PacketCarTelemetryData::push(char *receiveBuffer)
 
 CarTelemetryData PacketCarTelemetryData::m_carTelemetryData(int index)
 {
-    if (index >= 0 && index < 22)
+    if (index >= 0 && index < 24)
         return m_carTelemetryData_[index];
     else return CarTelemetryData{};
 }

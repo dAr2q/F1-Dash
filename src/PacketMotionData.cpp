@@ -2,7 +2,7 @@
 #include "PacketMotionData.h"
 #include <cstring>
 
-const int MOTION_BUFFER_SIZE = 1349;
+const int MOTION_BUFFER_SIZE = 1325;
 
 PacketMotionData::PacketMotionData()
 : PHeader()
@@ -18,7 +18,7 @@ void PacketMotionData::push(char *receiveBuffer)
 
 CarMotionData PacketMotionData::m_carMotionData(int index)
 {
-    if (index < 22 && index >= 0)
+    if (index < 24 && index >= 0)
         return m_carMotionData_[index];
     else return CarMotionData{};
 }

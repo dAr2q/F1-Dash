@@ -109,7 +109,8 @@ union EventDataDetails
 
         uint8_t vehicle1Idx; // Vehicle index of the first vehicle involved in the collision
         uint8_t vehicle2Idx; // Vehicle index of the second vehicle involved in the collision
-
+		uint8_t	severity;	// Severity of the collision - 0 = low, 1 = medium, 2 = high
+		
     } Collision;
 };
 
