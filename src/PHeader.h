@@ -14,7 +14,7 @@ static const uint32_t     cs_maxNumTyreSets = 13 + 7; // 13 slick and 7 wet weat
 struct PacketHeader
 {
     uint16_t m_packetFormat; // 2026
-    uint8_t m_gameYear; // 2026
+    uint8_t m_gameYear; // 25
     uint8_t m_gameMajorVersion; // Game major version - "X.00"
     uint8_t m_gameMinorVersion; // Game minor version - "1.XX"
     uint8_t m_packetVersion; // Version of this packet type, all start from 1
@@ -44,7 +44,7 @@ public:
     uint64_t m_sessionUID(void); // Unique identifier for the session
     float m_sessionTime(void); // Session timestamp
     uint32_t m_frameIdentifier(void); // Identifier for the frame the data was retrieved on
-    uint32_t m_overallframeIdentifier(void); // Identifier for the frame the data was retrieved on
+    uint32_t m_overallFrameIdentifier(void); // Identifier for the frame the data was retrieved on
     uint8_t m_playerCarIndex(void); // Index of player's car in the array
     uint8_t m_secondaryPlayerCarIndex(void); // Index of secondary player's car in the array (splitscreen) (255 if no second player)
     void push(char *receiveBuffer);

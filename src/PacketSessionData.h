@@ -135,6 +135,19 @@ public:
 // structure - see appendix for types
     float m_sector2LapDistanceStart(void); // Distance in m around track where sector 2 starts
     float m_sector3LapDistanceStart(void); // Distance in m around track where sector 3 starts
+    uint8_t m_activeAeroTrackStatus(void); // 0 = Full, 1 = Partial
+    uint8_t m_numActiveAeroZonesFull(void); // Number of active aero zones to follow
+    ActiveAeroZone m_activeAeroZonesFull(int index); // List of active aero zones – max 8
+    uint8_t m_numActiveAeroZonesPartial(void); // Number of active aero zones to follow
+    ActiveAeroZone m_activeAeroZonesPartial(int index); // List of active aero zones – max 8
+    uint8_t m_numDRSZones(void); // Number of DRS zones to follow
+    DRSZone m_drsZones(int index); // List of DRS zones – max 4
+    float m_startReactionTime(void); // Player's reaction time to start lights going out in seconds
+    uint8_t m_antiLockBrakesAssist(void); // 0 = Off, 1 = On
+    uint8_t m_tractionControlAssist(void); // 0 = Off, 1 = Medium, 2 = Full
+    uint8_t m_dynamicRacingLineHiVis(void); // 0 = Off, 1 = On
+    uint8_t m_dynamicRacingLineColourBlind(void); // 0 = Off, 1 = Protonopia, 2 = Deuteranopia, 3 = Tritanopia
+    uint8_t m_recurringRewindPrompt(void); // 0 = Off, 1 = On
     void push(char *receiveBuffer);
 
 private:
@@ -222,6 +235,21 @@ private:
 // structure - see appendix for types
     float m_sector2LapDistanceStart_; // Distance in m around track where sector 2 starts
     float m_sector3LapDistanceStart_; // Distance in m around track where sector 3 starts
+
+    // Aero and DRS Zones
+    uint8_t m_activeAeroTrackStatus_; // 0 = Full, 1 = Partial
+    uint8_t m_numActiveAeroZonesFull_; // Number of active aero zones to follow
+    ActiveAeroZone m_activeAeroZonesFull_[8]; // List of active aero zones – max 8
+    uint8_t m_numActiveAeroZonesPartial_; // Number of active aero zones to follow
+    ActiveAeroZone m_activeAeroZonesPartial_[8]; // List of active aero zones – max 8
+    uint8_t m_numDRSZones_; // Number of DRS zones to follow
+    DRSZone m_drsZones_[4]; // List of DRS zones – max 4
+    float m_startReactionTime_; // Driver start reaction time in seconds
+    uint8_t m_antiLockBrakesAssist_; // 0 = Off, 1 = On
+    uint8_t m_tractionControlAssist_; // 0 = Off, 1 = Medium, 2 = Full
+    uint8_t m_dynamicRacingLineHiVis_; // 0 = Off, 1 = On
+    uint8_t m_dynamicRacingLineColourBlind_; // 0 = Off, 1 = Protonopia, 2 = Deuteranopia, 3 = Tritanopia
+    uint8_t m_recurringRewindPrompt_; // 0 = Off, 1 = On
 };
 #pragma pack(pop)
 

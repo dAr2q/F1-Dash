@@ -403,3 +403,74 @@ float PacketSessionData::m_sector3LapDistanceStart(void)
 {
     return m_sector3LapDistanceStart_;
 }
+
+uint8_t PacketSessionData::m_activeAeroTrackStatus(void)
+{
+    return m_activeAeroTrackStatus_;
+}
+
+uint8_t PacketSessionData::m_numActiveAeroZonesFull(void)
+{
+    return m_numActiveAeroZonesFull_;
+}
+
+ActiveAeroZone PacketSessionData::m_activeAeroZonesFull(int index)
+{
+    if (index >= 0 && index < 8)
+        return m_activeAeroZonesFull_[index];
+    else return ActiveAeroZone{};
+}
+
+uint8_t PacketSessionData::m_numActiveAeroZonesPartial(void)
+{
+    return m_numActiveAeroZonesPartial_;
+}
+
+ActiveAeroZone PacketSessionData::m_activeAeroZonesPartial(int index)
+{
+    if (index >= 0 && index < 8)
+        return m_activeAeroZonesPartial_[index];
+    else return ActiveAeroZone{};
+}
+
+uint8_t PacketSessionData::m_numDRSZones(void)
+{
+    return m_numDRSZones_;
+}
+
+DRSZone PacketSessionData::m_drsZones(int index)
+{
+    if (index >= 0 && index < 4)
+        return m_drsZones_[index];
+    else return DRSZone{};
+}
+
+float PacketSessionData::m_startReactionTime(void)
+{
+    return m_startReactionTime_;
+}
+
+uint8_t PacketSessionData::m_antiLockBrakesAssist(void)
+{
+    return m_antiLockBrakesAssist_;
+}
+
+uint8_t PacketSessionData::m_tractionControlAssist(void)
+{
+    return m_tractionControlAssist_;
+}
+
+uint8_t PacketSessionData::m_dynamicRacingLineHiVis(void)
+{
+    return m_dynamicRacingLineHiVis_;
+}
+
+uint8_t PacketSessionData::m_dynamicRacingLineColourBlind(void)
+{
+    return m_dynamicRacingLineColourBlind_;
+}   
+
+uint8_t PacketSessionData::m_recurringRewindPrompt(void)
+{
+    return m_recurringRewindPrompt_;
+}

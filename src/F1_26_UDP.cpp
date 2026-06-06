@@ -11,7 +11,6 @@
 #include "PacketCarSetupData.h"
 #include "PacketCarTelemetryData.h"
 #include "PacketCarStatusData.h"
-#include "PacketCarStatusData.h"
 #include "PacketFinalClassificationData.h"
 #include "PacketLobbyInfo.h"
 #include "PacketCarDamageData.h"
@@ -19,8 +18,8 @@
 #include "PacketMotionEX.h"
 #include "PacketTyreSetData.h"
 #include "PacketTimeTrialData.h"
-#include "PacketTimeTrialData.h"
 #include "PacketLapPositions.h"
+#include "PacketCarTelemetryData2.h"
 
 unsigned int localPort;
 
@@ -44,6 +43,7 @@ F1_26_Parser::F1_26_Parser()
     packetMotionEXData_ = new PacketMotionEXData();
     packetTimeTrialData_ = new PacketTimeTrialData();
     packetLapPositionsData_ = new PacketLapPositionsData();
+    packetCarTelemetryData2_ = new PacketCarTelemetryData2();
 }
 
 F1_26_Parser::~F1_26_Parser()
@@ -64,6 +64,7 @@ F1_26_Parser::~F1_26_Parser()
     delete packetMotionEXData_;
     delete packetTimeTrialData_;
     delete packetLapPositionsData_;
+    delete packetCarTelemetryData2_;
 }
 
 void F1_26_Parser::begin(int port) {
@@ -120,6 +121,8 @@ void F1_26_Parser::push(char * rcvBuffer)
         case 14: packetTimeTrialData_->push(rcvBuffer);
             break;
         case 15: packetLapPositionsData_->push(rcvBuffer);
+            break;
+        case 16: packetCarTelemetryData2_->push(rcvBuffer);
             break;
         default:;
     }
@@ -204,4 +207,9 @@ PacketTimeTrialData* F1_26_Parser::packetTimeTrialData(void)
 PacketLapPositionsData* F1_26_Parser::packetLapPositionsData(void)
 {
     return packetLapPositionsData_;
+}
+
+PacketCarTelemetryData2* F1_26_Parser::packetCarTelemetryData2(void)
+{
+    return packetCarTelemetryData2_;
 }

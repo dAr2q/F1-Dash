@@ -36,8 +36,8 @@ struct CarStatusData
     uint8_t m_tyresAgeLaps; // Age in laps of the current set of tyres
     int8_t m_vehicleFiaFlags; // -1 = invalid/unknown, 0 = none, 1 = green
     // 2 = blue, 3 = yellow, 4 = red
-    float m_engine_power_ice;
-    float m_engine_power_mguk;
+    float m_enginePowerICE; // Engine power output of ICE (W)
+    float m_enginePowerMGUK; // Engine power output of MGU-K (W)
     float m_ersStoreEnergy; // ERS energy store in Joules
     uint8_t m_ersDeployMode; // ERS deployment mode, 0 = none, 1 = medium
     // 2 = hotlap, 3 = overtake

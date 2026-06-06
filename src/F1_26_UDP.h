@@ -2,7 +2,6 @@
 #ifndef F1_26_UDP_H
 #define F1_26_UDP_H
 
-#include "PacketSessionHistoryData.h"
 #include "PacketMotionData.h"
 #include "PacketSessionData.h"
 #include "PacketLapData.h"
@@ -19,6 +18,7 @@
 #include "PacketMotionEX.h"
 #include "PacketTimeTrialData.h"
 #include "PacketLapPositions.h"
+#include "PacketCarTelemetryData2.h"
 
 class F1_26_Parser
 {
@@ -43,6 +43,7 @@ public:
     PacketMotionEXData* packetMotionEXData(void);
     PacketTimeTrialData* packetTimeTrialData(void);
     PacketLapPositionsData* packetLapPositionsData(void);
+    PacketCarTelemetryData2* packetCarTelemetryData2(void);
 private:
     void push(char * receiveBuffer);
     PacketMotionData* packetMotionData_;
@@ -61,6 +62,7 @@ private:
     PacketMotionEXData* packetMotionEXData_;
     PacketTimeTrialData* packetTimeTrialData_;
     PacketLapPositionsData* packetLapPositionsData_;
+    PacketCarTelemetryData2* packetCarTelemetryData2_;
 };
 
 #endif
